@@ -3,7 +3,7 @@ import eel
 eel.init('client')
 
 @eel.expose
-def printText():
+def logTasks():
     return 'Welcome'
 
 eel.start('index.html')
