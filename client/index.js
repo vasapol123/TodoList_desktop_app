@@ -1,5 +1,5 @@
 document.querySelector('button').onclick = () => {
-    eel.printText()((value) => {
-        document.querySelector('h1').innerHTML = value;
+    eel.logTasks()((value) => {
+        document.querySelector(".title").innerHTML = value;
     });
 };

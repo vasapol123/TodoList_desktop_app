@@ -68,4 +68,4 @@ class TodoList:
 if __name__ == '__main__':
     todoList = TodoList('Shopping')
     # todoList.createTask('Buy eggs', 'Today')
-    print(todoList.updateTask('61c8d368f730408baa74b39f6ffdd6ff', { "deadline": "Today" }))
+    print(todoList.updateTask('61c8d368f730408baa74b39f6ffdd6ff', { "name": "pee","deadline": "eiei" }))
