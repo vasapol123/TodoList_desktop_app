@@ -4,6 +4,6 @@ eel.init('client')
 
 @eel.expose
 def logTasks():
-    return 'Welcome'
+    return 'Welcome2222'
 
 eel.start('index.html')
