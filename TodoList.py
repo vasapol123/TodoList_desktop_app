@@ -7,12 +7,12 @@ class TodoList:
         self._topic = topic
         self._pinned = False
         self.__currentPath = Path(__file__).parent.absolute()
-        self.__tasks = self.__readTasks()
+        self.__list = self.__readTasks()
 
-        tasks = self.__tasks
+        tasks = self.__list
         for list in [*tasks]:
             if (list == topic):
-                return
+                return None
 
         tasks[topic] = []
         self.__writeTasks(tasks)
@@ -27,7 +27,7 @@ class TodoList:
             json.dump(data, file, indent=4, separators=(',', ': '))  
 
     def getTasks(self):
-        return self.__tasks[self._topic]
+        return self.__list[self._topic]
 
     def getTask(self, taskId):
         for task in self.getTasks():
@@ -52,15 +52,15 @@ class TodoList:
             "completed": task.completed
         })
 
-        self.__writeTasks(self.__tasks)
+        self.__writeTasks(self.__list)
 
     def deleteTask(self, taskId):
         tasks = self.getTasks()
 
         newTasks = filter(lambda task: (task['_id'] != taskId), tasks)
 
-        self.__tasks[self._topic] = list(newTasks)
-        self.__writeTasks(self.__tasks)
+        self.__list[self._topic] = list(newTasks)
+        self.__writeTasks(self.__list)
 
     def updateTask(self, taskId, newTaskData):
         task = self.getTask(taskId)
@@ -73,8 +73,8 @@ class TodoList:
         newTasks = map(lambda oldTask: (
             task if (oldTask['_id'] == taskId) else oldTask), tasks)
 
-        self.__tasks[self._topic] = list(newTasks)
-        self.__writeTasks(self.__tasks)
+        self.__list[self._topic] = list(newTasks)
+        self.__writeTasks(self.__list)
         
 if __name__ == '__main__':
     todoList = TodoList('Shopping')
