@@ -1,26 +1,16 @@
-[
-    {
-        "_id": "2749133d2067411e876a7f33153ae981",
-        "name": "Buy ice-cream",
-        "deadline": "Today",
-        "completed": false
-    },
-    {
-        "_id": "61c8d368f730408baa74b39f6ffdd6ff",
-        "name": "pee",
-        "deadline": "eiei",
-        "completed": false
-    },
-    {
-        "_id": "8f23032924a94a279284cb02102ecf3d",
-        "name": "Buy swimming suit",
-        "deadline": "Today",
-        "completed": false
-    },
-    {
-        "_id": "684c6c651f3d4a2e8a5bae2cf266895b",
-        "name": "Buy eggs",
-        "deadline": "Today",
-        "completed": false
-    }
-]
+{
+    "Shopping": [
+        {
+            "_id": "907748f3bf1c4d3f9cabbf4def0e49b9",
+            "name": "pee",
+            "deadline": "eiei",
+            "completed": false
+        },
+        {
+            "_id": "dd70b72807464c829a2c9ad6b5d839e6",
+            "name": "Buy rice",
+            "deadline": "Today",
+            "completed": false
+        }
+    ]
+}

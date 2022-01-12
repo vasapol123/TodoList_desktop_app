@@ -9,6 +9,14 @@ class TodoList:
         self.__currentPath = Path(__file__).parent.absolute()
         self.__tasks = self.__readTasks()
 
+        tasks = self.__tasks
+        for list in [*tasks]:
+            if (list == topic):
+                return
+
+        tasks[topic] = []
+        self.__writeTasks(tasks)
+
     # To-do list private methods or behaviours
     def __readTasks(self):
         with open(self.__currentPath/'data'/'tasks.json') as file:
@@ -19,10 +27,10 @@ class TodoList:
             json.dump(data, file, indent=4, separators=(',', ': '))  
 
     def getTasks(self):
-        return self.__tasks
+        return self.__tasks[self._topic]
 
     def getTask(self, taskId):
-        for task in self.__tasks:
+        for task in self.getTasks():
             if (task['_id'] == taskId):
                 return task
 
@@ -44,28 +52,31 @@ class TodoList:
             "completed": task.completed
         })
 
-        self.__writeTasks(tasks)
+        self.__writeTasks(self.__tasks)
 
     def deleteTask(self, taskId):
         tasks = self.getTasks()
 
         newTasks = filter(lambda task: (task['_id'] != taskId), tasks)
-        
-        self.__writeTasks(list(newTasks))
+
+        self.__tasks[self._topic] = list(newTasks)
+        self.__writeTasks(self.__tasks)
 
     def updateTask(self, taskId, newTaskData):
         task = self.getTask(taskId)
+        tasks = self.getTasks()
 
         for key in [*task]:
             if (key in newTaskData):
                 task[key] = newTaskData[key]
 
         newTasks = map(lambda oldTask: (
-            task if (oldTask['_id'] == taskId) else oldTask), self.__tasks)
+            task if (oldTask['_id'] == taskId) else oldTask), tasks)
 
-        self.__writeTasks(list(newTasks))
+        self.__tasks[self._topic] = list(newTasks)
+        self.__writeTasks(self.__tasks)
         
 if __name__ == '__main__':
     todoList = TodoList('Shopping')
-    # todoList.createTask('Buy eggs', 'Today')
-    print(todoList.updateTask('61c8d368f730408baa74b39f6ffdd6ff', { "name": "pee","deadline": "eiei" }))
+    print(todoList.createTask('Buy rice', 'Today'))
+    # print(todoList.updateTask('907748f3bf1c4d3f9cabbf4def0e49b9', { "name": "pee","deadline": "eiei" }))
