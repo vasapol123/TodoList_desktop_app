@@ -1,21 +1,27 @@
 import json
+import uuid
 from pathlib import Path
 from Task import Task
 
 class TodoList:
     def __init__(self, topic):
+        self._id = uuid.uuid4().hex
         self._topic = topic
         self._pinned = False
         self.__currentPath = Path(__file__).parent.absolute()
         self.__list = self.__readTasks()
 
-        tasks = self.__list
-        for list in [*tasks]:
-            if (list == topic):
+        todoList = self.__list
+        for list in todoList:
+            if (list['topic'] == topic):
                 return None
 
-        tasks[topic] = []
-        self.__writeTasks(tasks)
+        todoList.append({
+            "_id": self._id,
+            "topic": topic,
+            "tasks": []
+        })
+        self.__writeTasks(todoList)
 
     # To-do list private methods or behaviours
     def __readTasks(self):
@@ -27,7 +33,7 @@ class TodoList:
             json.dump(data, file, indent=4, separators=(',', ': '))  
 
     def getTasks(self):
-        return self.__list[self._topic]
+        return (item for item in self.__list if item['topic'] == self._topic).__next__()['tasks']
 
     def getTask(self, taskId):
         for task in self.getTasks():
@@ -54,29 +60,31 @@ class TodoList:
 
         self.__writeTasks(self.__list)
 
+        return tasks
+
     def deleteTask(self, taskId):
         tasks = self.getTasks()
 
-        newTasks = filter(lambda task: (task['_id'] != taskId), tasks)
+        for i in range(len(tasks)):
+            if (tasks[i]['_id'] == taskId):
+                del tasks[i]
+                break
 
-        self.__list[self._topic] = list(newTasks)
         self.__writeTasks(self.__list)
 
     def updateTask(self, taskId, newTaskData):
         task = self.getTask(taskId)
-        tasks = self.getTasks()
 
         for key in [*task]:
             if (key in newTaskData):
                 task[key] = newTaskData[key]
 
-        newTasks = map(lambda oldTask: (
-            task if (oldTask['_id'] == taskId) else oldTask), tasks)
-
-        self.__list[self._topic] = list(newTasks)
         self.__writeTasks(self.__list)
         
 if __name__ == '__main__':
     todoList = TodoList('Shopping')
-    print(todoList.createTask('Buy rice', 'Today'))
-    # print(todoList.updateTask('907748f3bf1c4d3f9cabbf4def0e49b9', { "name": "pee","deadline": "eiei" }))
+    # print(todoList.getTasks())
+    # print(todoList.getTask('71b865847cc14605aaf387c3dfdfe751'))
+    # print(todoList.createTask('Buy cola', 'Tomorrow'))
+    # print(todoList.deleteTask('71b865847cc14605aaf387c3dfdfe751'))
+    print(todoList.updateTask('1348568f522b4c3ba5e237097e8358a9', { "name": "Buy pepsi","deadline": "Tomorrow" }))
