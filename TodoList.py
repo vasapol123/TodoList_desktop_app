@@ -60,7 +60,7 @@ class TodoList:
 
         self.__writeTasks(self.__list)
 
-        return tasks
+        return tasks[-1]
 
     def deleteTask(self, taskId):
         tasks = self.getTasks()
@@ -80,6 +80,8 @@ class TodoList:
                 task[key] = newTaskData[key]
 
         self.__writeTasks(self.__list)
+        
+        return task
         
 if __name__ == '__main__':
     todoList = TodoList('Shopping')

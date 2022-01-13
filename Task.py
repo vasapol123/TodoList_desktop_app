@@ -29,6 +29,10 @@ class Task:
     def deadline(self):
         return self._deadline
 
+    @completed.setter
+    def completed(self, value):
+        self._completed = value
+
 if __name__ == '__main__':
     task = Task("Name", "Today")
     task.name = "new name"

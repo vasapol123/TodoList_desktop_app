@@ -1,18 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo List</title>
-    <link href="./assets/fontawesome/css/all.css" rel="stylesheet">
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
-    <h1 class="title">Hello eel</h1>
-    <h1>dkdkdkd</h1>
-    <button>CLick</button>
-    <script src="index.js"></script>
-    <script type="text/javascript" src="/eel.js"></script>  
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Todo List</title>
+        <link href="./source/assets/fontawesome/css/all.css" rel="stylesheet">
+        <link rel="stylesheet" href="./source/fontface.css">
+        <link rel="stylesheet" href="index.css">
+    </head>
+    <body>
+        <div class="header">
+            <header>
+                <h1 class="header__h1">Todo List</h1>
+                <input class="header__input" placeholder="Add new task"/>
+                <button class="header__button">Click</button>
+            </header>
+            <div class="todo-list" id="todo-list">
+                <!-- These inner elements will come from JavaScript -->
+            </div>
+        </div>
+
+        <div class="tasks" id="tasks">
+            <!-- These inner elements will come from JavaScript -->
+        </div>
+
+        <!-- Import JavaScript files -->
+        <script type="text/javascript" src="./source/lib/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="/eel.js"></script>  
+        <script src="./source/jQuery.js"></script>
+        <!-- <script src="index.js"></script> -->
+    </body>
 </html>

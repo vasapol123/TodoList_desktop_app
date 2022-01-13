@@ -1,5 +1,6 @@
 .title {
     display: flex;
     justify-content: center;
-    color: green;
+    color: #646B8C;
+    font-family: 'circularstdbook';
 }

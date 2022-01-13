@@ -1,16 +1,43 @@
-{
-    "Shopping": [
-        {
-            "_id": "907748f3bf1c4d3f9cabbf4def0e49b9",
-            "name": "pee",
-            "deadline": "eiei",
-            "completed": false
-        },
-        {
-            "_id": "dd70b72807464c829a2c9ad6b5d839e6",
-            "name": "Buy rice",
-            "deadline": "Today",
-            "completed": false
-        }
-    ]
-}
+[
+    {
+        "_id": "1452d427fd8a4495a675bf33d6538188",
+        "topic": "Shopping",
+        "tasks": [
+            {
+                "_id": "f08ef36b1ad94845a9718b0cd2ab4714",
+                "name": "Buy pepsi",
+                "deadline": "Today",
+                "completed": false
+            },
+            {
+                "_id": "fe117502746b40e4a5b59f31e5050ff8",
+                "name": "Buy cola",
+                "deadline": "Today",
+                "completed": false
+            },
+            {
+                "_id": "fd41568a343840d3ab8f752e5e158127",
+                "name": "Buy sprite",
+                "deadline": "Today",
+                "completed": false
+            }
+        ]
+    },
+    {
+        "_id": "01ee142ad7074f8e9afaf2431c48bb63",
+        "topic": "Homework",
+        "tasks": [
+            {
+                "_id": "4c004cdbc7a743f1b41280b94318dc43",
+                "name": "Computer Network",
+                "deadline": "Today",
+                "completed": false
+            }
+        ]
+    },
+    {
+        "_id": "e37e94bba0e04a9997fe627f17da9a04",
+        "topic": "hi",
+        "tasks": []
+    }
+]
