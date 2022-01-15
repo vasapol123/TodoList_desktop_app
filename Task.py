@@ -1,9 +1,10 @@
 import uuid
 
 class Task:
-    def __init__(self, name, deadline):
+    def __init__(self, name, description, deadline):
         self._id = uuid.uuid4().hex
         self._name = name
+        self._description = description
         self._deadline = deadline
         self._completed = False
 
@@ -26,8 +27,8 @@ class Task:
         self._name = value
 
     @deadline.setter
-    def deadline(self):
-        return self._deadline
+    def deadline(self, value):
+        self._deadline = value
 
     @completed.setter
     def completed(self, value):

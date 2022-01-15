@@ -1,38 +1,56 @@
 import eel
-import json
-from TodoList import TodoList
+from ListHandler import ListHandler
+from TaskHandler import TaskHandler
 
 eel.init('client')
 
-todoList = None;
+tasks = None
 
 @eel.expose
-def createTodoList(value):
-    todoList = TodoList(value)
-    return todoList._topic
+def createList(topic, description):
+    try:
+        _list = ListHandler().createList(topic, description)
+        return _list
+    except Exception as error:
+        return { "error": str(error) }
 
 @eel.expose
-def getTodoList():
-    with open('./data/tasks.json') as file:
-        return [*json.load(file)]
+def getLists():
+    lists = ListHandler().getLists()
+    return lists
 
 @eel.expose
-def getTasks(topic):
-    global todoList
-    todoList = TodoList(topic)
-    return todoList.getTasks()
+def updateList(listId, newData):
+    try:
+        updatedList = ListHandler().updateList(listId, newData)
+        return updatedList
+    except Exception as error:
+        return { "error": str(error) }
 
 @eel.expose
-def createTask(name):
-    return todoList.createTask(name, 'Today')
+def deleteList(listId):
+    return ListHandler().deleteList(listId)
 
 @eel.expose
-def updateTask(taskId, value):
-    return todoList.updateTask(taskId, value);
+def getTasks(listId):
+    global tasks
+    tasks = TaskHandler(listId)
+    return tasks.getTasks()
+
+@eel.expose
+def createTask(name, description):
+    return tasks.createTask(name, description, 'Today')
 
 @eel.expose
 def deleteTask(taskId):
-    todoList.deleteTask(taskId);
+    return tasks.deleteTask(taskId)
 
+@eel.expose
+def updateTask(taskId, newData):
+    try:
+        updatedTask = tasks.updateTask(taskId, newData)
+        return updatedTask
+    except Exception as error:
+        return { "error": str(error) }
 
 eel.start('index.html')
