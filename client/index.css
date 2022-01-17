@@ -1,6 +1,426 @@
-.title {
-    display: flex;
-    justify-content: center;
-    color: #646B8C;
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #f8f9fa;
     font-family: 'circularstdbook';
+}
+
+.container {
+    display: flex;
+    position: relative;
+    width: 100%;
+    max-width: 668px;
+    margin: 0 auto;
+    height: auto;
+    padding-top: 24px;
+    margin-top: 48px;
+    padding-bottom: 154px;
+    background-color: #fae5e3;
+    border-radius: 8px;
+}
+
+.box {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 580px;
+    margin: 0 auto;
+    justify-content: center;
+}
+
+.header {
+    height: 125px;
+    position: absolute;
+    width: 620px;
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #a7767c;
+    border: 3px solid #000;
+    box-shadow: 0px 2px 0px #000, 0 0.3rem 0rem 0 rgb(0 0 0 / 15%);
+}
+
+.header__container img {
+    position: absolute;
+    user-select: none;
+    top: -60px;
+    left: -100px;
+}
+
+.header__container {
+    position: relative;
+    width: 70%;
+    height: 100%;
+    display: flex
+}
+
+.header__h1 {
+    position: absolute;
+    color: #fff;
+    font-size: 21px;
+    left: 24px;
+    top: 24px;
+}
+
+.header__description {
+    position: absolute;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    left: 24px;
+    bottom: 24px;
+}
+
+#list,
+#task {
+    position: relative;
+    width: 100%;
+    top: 130px;
+}
+
+#task {
+    width: 100%;
+    margin-top: 24px;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.list__form,
+.task__form {
+    position: relative;
+    font-family: inherit;
+    font-size: 16px;
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: end;
+    border-bottom: 2px solid rgba(230, 230, 230, 70%);
+    margin: 0 24px;
+    padding: 24px 0;
+}
+
+.list__form {
+    width: 100%;
+}
+
+.task__form {
+    padding-top: 0;
+}
+
+.list__form > input,
+.list__form > textarea,
+.task__form > input,
+.task__form > textarea {
+    font-family: inherit;
+    font-size: inherit;
+    width: 100%;
+    border-radius: .25rem;
+    padding: 16px;
+    border: 2px solid #ccc;
+    outline: none;
+}
+
+.list__input,
+.task__input {
+    outline: none;
+    margin-top: 24px;
+}
+
+.list__textarea,
+.task__textarea {
+    margin-top: 14px;
+    resize: vertical;
+}
+
+.list__button,
+.task__button,
+.header__list-toggle {
+    font-family: inherit;
+    font-size: 14px;
+    width: 64px;
+    height: 38px;
+    margin-top: 14px;
+    background-color: #fff;
+    border-radius: 6px;
+    border: 2px solid #ccc;
+    box-shadow: 0px 2px 0px #ccc;
+    cursor: pointer;
+}
+
+.list__buttton:active,
+.task__button:active {
+    box-shadow: 0px 0px 0px #ccc;
+    transform: translateY(2px);
+}
+
+.header__list-toggle {
+    position: absolute;
+    right: 14px;
+    width: 38px;
+    background-color: #de3a4d;
+    border: 2px solid #a12a38;
+    box-shadow: 0px 2px 0px #a12a38;
+}
+
+.header__list-toggle:active {
+    box-shadow: 0px 0px 0px #a12a38 !important;
+    transform: translateY(2px);
+}
+
+.header__list-toggle i {
+    color: #fff;
+}
+
+.list__form i {
+    visibility: hidden;
+    position: absolute;
+    color: #ccc;
+    top: 24px;
+    right: 0;
+    cursor: pointer;
+}
+
+.list__form i::before {
+    position: absolute;
+}
+
+.list__form i::after {
+    content: '\00d7';
+    visibility: visible;
+    font-size: 30px;
+    font-weight: 400;
+}
+
+.list__button:active {
+    box-shadow: 0px 0px 0px #ccc;
+    transform: translateY(2px);
+}
+
+.list__menu, 
+.task__menu {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    flex-flow: wrap;
+}
+
+.task__menu {
+    margin-top: 24px;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.list__item {
+    width: 100%;
+    margin-top: 24px;
+}
+
+.task__item {
+    width: 100%;
+    padding: 14px 14px 0 14px;
+    list-style-type: none;
+}
+
+.task__item:last-child {
+    padding: 14px 14px 14px 14px;
+}
+
+.list__content {
+    width: 100%;
+    position: relative;
+    font-family: inherit;
+    height: auto;
+    outline: none;
+    cursor: pointer;
+    border-radius: 8px;
+    background-clip: content-box;
+    padding: 3px;
+    border: 3px solid #000;
+    box-shadow: 0px 2px 0px #000, 0 0.3rem 0rem 0 rgb(0 0 0 / 15%);
+}
+
+.list__content:active {
+    transform: translateY(2px);
+    box-shadow: 0px 0px 0px #000, 0 0.3rem 0rem 0 rgb(0 0 0 / 15%);
+}
+
+.list__content > *:not(p:nth-of-type(-n + 2)) {
+    position: absolute;
+    font-size: 16px;
+    margin: 0;
+}
+
+.list__content .list__topic {
+    width: 50%;
+    text-align: left;
+    font-size: 21px;
+    padding: 0;
+    margin: 24px 0 0 24px;
+    cursor: text;
+}
+
+.list__content .list__description {
+    width: 50%;
+    text-align: left;
+    font-size: 16px;
+    margin: 8px 0 24px 24px;
+    color: rgba(0, 0, 0, 0.7);
+    cursor: text;
+}
+
+.list__content .list__date,
+.list__content .list__tasks {
+    color: rgba(0, 0, 0, 0.7);
+    right: 24px;
+    bottom: 24px;
+}
+
+.list__content .list__tasks {
+    color: #e68f42;
+    right: 170px;
+}
+
+.list__content .list__tasks::after {
+    content: " \B7 ";
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.list__content .list__edit,
+.list__content .list__delete,
+.task__content .task__edit,
+.task__content .task__delete {
+    top: 14px;
+    right: 0;
+    font-family: inherit;
+    width: 64px;
+    height: 38px;
+    font-size: 14px;
+    background-color: #fff;
+    border-radius: 6px;
+    border: 2px solid #ccc;
+    box-shadow: 0px 2px 0px #ccc;
+    cursor: pointer;
+}
+
+.list__content .list__edit {
+    right: 84px;
+}
+
+.list__content .list__edit:active,
+.task__content .task__edit:active {
+    box-shadow: 0px 0px 0px #ccc;
+    transform: translateY(2px);
+}
+
+.list__content .list__delete,
+.task__content .task__delete {
+    color: #fff;
+    right: 14px;
+    border: 2px solid #a12a38;
+    box-shadow: 0px 2px 0px #a12a38 !important;
+    background-color: #de3a4d;
+}
+
+.list__content .list__delete:active {
+    box-shadow: 0px 0px 0px #a12a38 !important;
+    transform: translateY(2px);
+}
+
+.task__back {
+    display: flex;
+    align-items: center;
+    margin-left: 24px;
+    cursor: pointer;
+}
+
+.task__back p {
+    margin-top: 17px;
+    margin-left: 14px;
+}
+
+.task__content {
+    display: flex;
+    align-items: center;
+}
+
+.task__name {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: 16px;
+    font-family: inherit;
+    flex-grow: 1;
+    color: rgba(0, 0, 0, 1);
+}
+
+.task__description {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: 16px;
+    font-family: inherit;
+}
+
+.task__edit {
+    margin-right: 8px;
+}
+
+.task__checkbox {
+    display: block;
+    position: relative;
+    user-select: none;
+    width: 21px;
+    height: 21px;
+    margin-right: 14px;
+}
+
+.task__checkbox input {
+    position: absolute;
+    top: -3px;
+    left: -4px;
+    width: 21px;
+    height: 21px;
+    opacity: 0;
+    cursor: pointer;
+    background-color: transparent;
+    z-index: 1;
+}
+
+.task__checkbox input:checked ~ .checkbox__checkmark:after {
+    opacity: 1;
+}
+
+.task__checkbox input:checked ~ .checkbox__checkmark {
+    background-color: #a7767c;
+}
+
+.task__checkbox .checkbox__checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 100%;
+    width: 21px;
+    height: 21px;
+    border-radius: 100%;
+    border: 2px solid #a7767c;
+    transition: background-color .2s;
+}
+
+.task__checkbox .checkbox__checkmark::after {
+    content: "";
+    position: absolute;
+    opacity: 0;
+    transition: opacity .2s;
+}
+
+.task__checkbox .checkbox__checkmark::after {
+    left: 6px;
+    top: 3px;
+    width: 3px;
+    height: 7px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
 }

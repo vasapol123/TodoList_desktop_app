@@ -5,30 +5,37 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Todo List</title>
+        <link rel="icon" href="./source/assets/svg/favicon.svg">
         <link href="./source/assets/fontawesome/css/all.css" rel="stylesheet">
         <link rel="stylesheet" href="./source/fontface.css">
         <link rel="stylesheet" href="index.css">
     </head>
     <body>
-        <div class="header">
-            <header>
-                <h1 class="header__h1">Todo List</h1>
-                <input class="header__input" placeholder="Add new task"/>
-                <button class="header__button">Click</button>
-            </header>
-            <div class="todo-list" id="todo-list">
-                <!-- These inner elements will come from JavaScript -->
-            </div>
-        </div>
+        <div class="container">
+            <div class="box">
+                <div class="header">
+                    <button class="header__list-toggle">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="header__container">
+                        <img src="./source/assets/svg/header.svg" width="400" height="auto" draggable="false"/>
+                        <div class="header__h1">Todo List</div>
+                        <span class="header__description">Here, you can create a list and manipulate your tasks as much as you wish.</span>
+                    </div>
+                </div>
+                <div class="list" id="list">            
+                        <!-- These inner elements will come from JavaScript -->
+                </div>
 
-        <div class="tasks" id="tasks">
-            <!-- These inner elements will come from JavaScript -->
+                <div class="task" id="task">
+                    <!-- These inner elements will come from JavaScript -->
+                </div>
+            </div>
         </div>
 
         <!-- Import JavaScript files -->
         <script type="text/javascript" src="./source/lib/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="/eel.js"></script>  
-        <script src="./source/jQuery.js"></script>
-        <!-- <script src="index.js"></script> -->
+        <script src="index.js"></script>
     </body>
 </html>

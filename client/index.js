@@ -1,137 +1,324 @@
-eel.expose(onButtonClick);
-function onButtonClick() {
-    const userInput = document.getElementsByClassName('header__input')[0].value
-    return userInput;
+const createTaskElement = (task) => {
+    const taskElement = $('<li>', { class: 'task__item' })
+    .append($('<div>', { class: 'task__content' })
+    .append([ 
+        $('<div>', { class: 'task__checkbox checkbox' }).append([
+            $('<input>', {
+                class: 'checkbox__input',
+                type: 'checkbox',
+                change: async function() {
+                    const task = $(this).parents('.task__item').data('task');
+
+                    const updatedTask = await eel.updateTask(task._id, { "_completed": $(this).is(':checked') })();
+                    if (updatedTask.error) {
+                        $('.task__form').after(createInvalidElement(updatedTask.error))
+
+                        return
+                    }
+                    const taskNameInput = $(this).parent().next('.task__name');
+
+                    if (updatedTask._completed) {
+                        taskNameInput.css({
+                            'text-decoration': 'line-through',
+                            'color': 'rgba(0, 0, 0, 0.2)'
+                        });
+                    }
+                    else {
+                        taskNameInput.css({ 
+                            'text-decoration': 'none',
+                            'color': 'rgba(0, 0, 0, 1)'
+                        });
+                    }
+                }
+            })
+            .prop('checked', task._completed),
+            $('<span>', { class: 'checkbox__checkmark' })
+        ]),
+        $('<input>', {
+            class: 'task__name',
+            disabled: 'disabled'
+        })
+        .css({
+            'text-decoration': function() {
+                if (task._completed) {
+                        return 'line-through';
+                }
+            },
+            'color': function() {
+                if (task._completed) {
+                        return 'rgba(0, 0, 0, 0.2)'
+                }
+            }
+        })
+        .val(task._name),
+        $('<button>', { 
+            class: 'task__edit',
+            type: 'button'
+        })
+        .on('click',
+            async function() {
+                let iteration = $(this).data('iteration') || 1;
+                const nameInput = $(this).prevAll('.task__name');
+                const descriptionInput = $(this).prev('.task__description');
+
+                switch (iteration) {
+                    case 1: {
+                        // editing task
+                        $(this).parents().children('.task__name').not('button').removeAttr('disabled');
+                        $(this).text('Save');
+
+                        break;
+                    }
+                    case 2: {
+                        $(this).parents().children('.task__name').not('button').attr('disabled', 'disabled');
+                        $(this).text('Edit');
+                        const task = $(this).parents('.task__item').data('task');
+
+                        const newData = {
+                            "_name": nameInput.val(),
+                            "_description": descriptionInput.val()
+                        };
+                        
+                        const updatedTask = await eel.updateTask(task._id, newData)();
+                        if (updatedTask.error) {
+                            $('.task__form').after(createInvalidElement(updatedTask.error))
+
+                            return
+                        }
+
+                        nameInput.val(updatedTask._name);
+
+                        break;
+                    }
+                }
+                iteration++;
+                if (iteration > 2) iteration = 1;
+                $(this).data('iteration', iteration);
+            }
+        )
+        .text('Edit'),
+        $('<button>', { 
+            class: 'task__delete',
+            type: 'button',
+            click: async function() {
+                await eel.deleteTask(task._id)();
+
+                $(this).parents('.task__item').fadeOut('fast', () => {
+                    $(this).parents('.task__item').remove();
+                });
+            }
+        })
+        .text('Delete')
+    ]));
+
+    taskElement.data('task', task);
+
+    return taskElement;
 };
 
-let taskObjects = [];
+const createListElement = (list) => {
+    function edit(event) {
+        event.stopPropagation();
+        const contents = $(this).prevAll();
 
-const createTaskElement = (textContent) => {
-    const div = document.createElement('div');
-    const span = document.createElement('span');
-    const iEdit = document.createElement('i');
+        contents.css('pointer-events', 'auto');
+        contents.prop('contenteditable', true).trigger('focus');
+        $(this).text('Save');
+        $(this).one('click', save);
+    }
 
-    span.textContent = textContent;
+    async function save(event) {
+        event.stopPropagation();
 
-    // create editing icon
-    iEdit.className = 'fas fa-pencil-alt fa-lg';
-    iEdit.onclick = function() {
-        const nameInput = document.createElement('input');
-        const updateButton = document.createElement('button');
-
-        nameInput.value = this.previousSibling.textContent;
-        updateButton.textContent = 'update';
-
-        task = taskObjects.find((task) => { 
-            return task.name === textContent;
-        });
+        const contents = $(this).prevAll('p');
         
-        updateButton.onclick = async function() {
-            updatedTask = await eel.updateTask(task._id, { "name": nameInput.value })();
-            span.textContent = updatedTask.name;
-            nameInput.remove();
-            updateButton.remove();
+        contents.css('pointer-events', 'none');
+        const updatedContents = [];
+        contents.each(function(_, content) {
+            updatedContents.push(content.textContent);
+        });
+        console.log(updatedContents);
+        const updatedList = await eel.updateList(list._id, {
+            "_topic": updatedContents[1],
+            "_description": updatedContents[0]
+        })();
+
+        if (updatedList.error) {
+            $('.list__form').after(createInvalidElement(updatedList.error));
         }
 
-        this.parentElement.appendChild(nameInput);
-        this.parentElement.appendChild(updateButton);
+        contents.prop('contenteditable', false);
+
+        $(this).text('Edit');
+        $(this).one('click', edit);
     }
 
-    div.appendChild(span);
-    div.appendChild(iEdit);
+    const listElement = $('<div>', { class: 'list__item' })
+    .append($('<button>', {
+        class: 'list__content',
+        click: async function() {
+            $('#task > *').remove();
+            $('#list').hide();
 
-    // create deleting icon
-    const iDelete = document.createElement('i');
-    iDelete.className = 'fas fa-trash fa-lg';
-    iDelete.onclick = async function() {
-        task = taskObjects.find((task) => { 
-            return task.name === textContent;
-        });
+            createTaskForm().prependTo('#task');
 
-        await eel.deleteTask(task._id)();
+            $('#task').show();
 
-        this.parentElement.parentElement.remove();
+            const ul = $('<ul>', { class: 'task__menu' }).appendTo('#task');
 
-        taskObjects = taskObjects.filter((taskObject) => {
-            return task._id !== taskObject._id
-        });
-        console.log(taskObjects);
-    }
+            $('<div>', { 
+                class: 'task__back',
+                click: async () => {
+                    $('#list').show();
+                    $('#task').children().remove();
 
-    div.appendChild(iDelete);
-    return div;
+                    const tasks = await eel.getTasks(list._id)();
+
+                    console.log($(this).children('.list__tasks').text(`${tasks.length} tasks`));
+                }
+            })
+            .append(
+                $('<i>', { class: 'fas fa-chevron-left' }),
+                $('<p>').text('Lists')
+            ).prependTo('#task');
+
+            const tasks = await eel.getTasks(list._id)();
+
+            tasks.forEach((task) => {
+                const taskElement = createTaskElement(task);
+                taskElement.appendTo(ul);
+            });
+        }
+    })
+    .append([
+        $('<p>', {
+            class: 'list__topic',
+            click: function(event) {
+                event.stopPropagation();
+            },
+            keypress: function(event) {
+                 return event.which != 13; 
+            }
+        })
+        .css('pointer-events', 'none')
+        .text(list._topic),
+        $('<p>', { 
+            class: 'list__description',
+            click: function(event) {
+                event.stopPropagation();
+            }, 
+        })
+        .css('pointer-events', 'none')
+        .text(list._description),
+        $('<button>', { 
+            class: 'list__edit'
+        })
+        .text('Edit')
+        .one('click', edit),
+        $('<button>', { 
+            class: 'list__delete',
+            click: async function(event) {
+                event.stopPropagation();
+
+                const list = $(this).parents('.list__item').data('list');
+
+                await eel.deleteList(list._id)();
+
+                $(this).parents('.list__item').fadeOut('fast', () => {
+                    $(this).parents('.list__item').remove();
+                });
+            } 
+        }).text('Delete'),
+        $('<p>', { class: 'list__tasks' }).text(`${list._List__tasks.length} tasks`),
+        $('<p>', { class: 'list__date' }).text(list._date)
+    ]));
+    console.log(list);
+    listElement.data('list', list);
+
+    return listElement;
 };
 
-const renderTasks = async (topic, element) => {
-    element.style.display = 'block';
+const createTaskForm = () => {
+    return $('<form>', {
+        class: 'task__form',
+        submit: async function(event) {
+            event.preventDefault();
+
+            task = await eel.createTask($(this).children('.task__input').val(), $(this).children('.task__textarea').val())();
+            createTaskElement(task).appendTo($('.task__menu'));
+        }
+    })
+    .append([
+        $('<input>', { class: 'task__input', placeholder: 'Add some topic' }),
+        $('<button>', { class: 'task__button' }).text('Create')
+    ]);
+};
+
+const createInvalidElement = (text) => {
+    const invalidElement = $('<div>', {
+        class: 'invalid'
+    }).append([
+        $('<p>').text(text),
+        $('<i>', { 
+            class: 'fas fa-slash',
+            click: function() {
+                $(this).parent().remove();
+            }
+        })
+    ]);
     
-    tasks = await eel.getTasks(topic)();
-    const ul = document.createElement('ul');
-    element.appendChild(ul);
-
-    tasks.forEach((element) => {
-        taskObjects.push(element);
-        const li = document.createElement('li');
-
-        ul.appendChild(li);
-
-        li.appendChild(createTaskElement(element.name));
-
-    });
+    return invalidElement;
 };
 
-const addTaskElement = (name, element) => {
-    const li = document.createElement('li');
-    li.appendChild(createTaskElement(name));
-    element.children[3].appendChild(li);
-}
+const createListForm = () => {
+    return $('<form>', {
+        class: 'list__form',
+        submit: async function(event) {
+            event.preventDefault();
 
-const createTodoElement = (topic) => {
-    const todoElement = document.createElement('button');
-    todoElement.innerHTML = topic;
+            const _list = await eel.createList($(this).children('.list__input').val(), $(this).children('.list__textarea').val())();
 
-    todoElement.onclick = async function() {
-        const tasksElement = document.getElementById('tasks');
-        tasksElement.innerHTML = '';
-        taskObjects = [];
-        
-        const nameInput = document.createElement('input');
-        const dateInput = document.createElement('input');
-        const taskButton = document.createElement('button');
+            if (_list.error) {
+                $('.list__form').after(createInvalidElement(_list.error));
 
-        dateInput.type = 'date';
-        console.log(dateInput);
-        taskButton.textContent = 'Add';
-        tasksElement.appendChild(nameInput);
-        tasksElement.appendChild(dateInput);
-        tasksElement.appendChild(taskButton);
-        
-        await renderTasks(this.textContent, tasksElement);
-        
-        taskButton.onclick = async function() {
-            console.log(dateInput.value);
-            task = await eel.createTask(nameInput.value)();
-            taskObjects.push(task);
-            console.log(taskObjects);
-            addTaskElement(task.name, tasksElement);
-        };
-        console.log(taskObjects);
-    };
+                return
+            }
+            $(this).next('.list__menu').append(createListElement(_list));
 
-    document.getElementById('todo-list').appendChild(todoElement);
+            $(this).fadeOut('fast', () => {
+                $(this).remove();
+            });
+        }
+    }).append([
+        $('<input>', { class: 'list__input', placeholder: 'Add some topic' }),
+        $('<textarea>', { class: 'list__textarea', placeholder: 'Add some description' }),
+        $('<button>', { class: 'list__button' }).text('Create'),
+        $('<i>', { 
+            class: 'fas fa-times fa-lg',
+            click: function() {
+                $('.header__list-toggle').one('click', function() {
+                    $('#list').children().prepend(createListForm());
+                });
+
+                $(this).parent().fadeOut('fast', () => {
+                    $(this).parent().remove();
+                });
+            }
+        })
+    ]).fadeIn('fast');
 };
 
-// initial fetch data from local database
-eel.getTodoList()((values) => {
-    values.forEach((value) => {
-        createTodoElement(value.topic);
+$(document).on('ready', async function() {
+    const items = await eel.getLists()();
+    const ul = $('<ul>', { class: 'list__menu' }).appendTo('#list');
+
+    items.forEach((item) => {
+        ul.append(createListElement(item));
+    });  
+
+    $('#task').hide();
+    
+    $('.header__list-toggle').one('click', function() {
+        $('#list').children().prepend(createListForm());
     });
 });
-
-document.getElementById('tasks').style.display = 'none';
-
-document.querySelector('.header__button').onclick = () => {
-    eel.createTodoList()((value) => {
-        createTodoElement(value);
-    });
-};
