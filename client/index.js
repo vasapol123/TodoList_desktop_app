@@ -283,6 +283,10 @@ const createListForm = () => {
 
                 return
             }
+            $('.header__list-toggle').one('click', function() {
+                $('#list').children().prepend(createListForm());
+            });
+
             $(this).next('.list__menu').append(createListElement(_list));
 
             $(this).fadeOut('fast', () => {
@@ -319,6 +323,6 @@ $(document).on('ready', async function() {
     $('#task').hide();
     
     $('.header__list-toggle').one('click', function() {
-        $('#list').children().prepend(createListForm());
+        $('#list').prepend(createListForm());
     });
 });
