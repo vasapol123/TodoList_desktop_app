@@ -95,7 +95,7 @@ body {
     flex-wrap: wrap;
     justify-content: end;
     border-bottom: 2px solid rgba(230, 230, 230, 70%);
-    margin: 0 24px;
+    margin: 0;
     padding: 24px 0;
 }
 
@@ -105,6 +105,7 @@ body {
 
 .task__form {
     padding-top: 0;
+    margin: 0 24px;
 }
 
 .list__form > input,
@@ -239,7 +240,7 @@ body {
     box-shadow: 0px 2px 0px #000, 0 0.3rem 0rem 0 rgb(0 0 0 / 15%);
 }
 
-.list__content:active {
+.list__content:enabled:active {
     transform: translateY(2px);
     box-shadow: 0px 0px 0px #000, 0 0.3rem 0rem 0 rgb(0 0 0 / 15%);
 }
@@ -254,6 +255,7 @@ body {
     width: 50%;
     text-align: left;
     font-size: 21px;
+    color: #000;
     padding: 0;
     margin: 24px 0 0 24px;
     cursor: text;

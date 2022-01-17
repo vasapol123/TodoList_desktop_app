@@ -122,6 +122,7 @@ const createListElement = (list) => {
         event.stopPropagation();
         const contents = $(this).prevAll();
 
+        $(this).parent().prop('disabled', true);
         contents.css('pointer-events', 'auto');
         contents.prop('contenteditable', true).trigger('focus');
         $(this).text('Save');
@@ -133,12 +134,13 @@ const createListElement = (list) => {
 
         const contents = $(this).prevAll('p');
         
+        $(this).parent().prop('disabled', false);
         contents.css('pointer-events', 'none');
         const updatedContents = [];
         contents.each(function(_, content) {
             updatedContents.push(content.textContent);
         });
-        console.log(updatedContents);
+
         const updatedList = await eel.updateList(list._id, {
             "_topic": updatedContents[1],
             "_description": updatedContents[0]
@@ -160,21 +162,21 @@ const createListElement = (list) => {
         click: async function() {
             $('#task > *').remove();
             $('#list').hide();
-
+    
             createTaskForm().prependTo('#task');
-
+    
             $('#task').show();
-
+    
             const ul = $('<ul>', { class: 'task__menu' }).appendTo('#task');
-
+    
             $('<div>', { 
                 class: 'task__back',
                 click: async () => {
                     $('#list').show();
                     $('#task').children().remove();
-
+    
                     const tasks = await eel.getTasks(list._id)();
-
+    
                     console.log($(this).children('.list__tasks').text(`${tasks.length} tasks`));
                 }
             })
@@ -182,9 +184,9 @@ const createListElement = (list) => {
                 $('<i>', { class: 'fas fa-chevron-left' }),
                 $('<p>').text('Lists')
             ).prependTo('#task');
-
+    
             const tasks = await eel.getTasks(list._id)();
-
+    
             tasks.forEach((task) => {
                 const taskElement = createTaskElement(task);
                 taskElement.appendTo(ul);
@@ -207,7 +209,7 @@ const createListElement = (list) => {
             class: 'list__description',
             click: function(event) {
                 event.stopPropagation();
-            } 
+            }
         })
         .css({ 
             'pointer-events': 'none' 
