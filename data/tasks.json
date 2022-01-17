@@ -30,15 +30,52 @@
         "_date": "17/01/2022 09:56:59",
         "_pinned": false,
         "_priority": null,
-        "_List__tasks": []
+        "_List__tasks": [
+            {
+                "_id": "b5558f8ba04847b5b057c7fafaa355b0",
+                "_name": "CN",
+                "_description": null,
+                "_deadline": "Today",
+                "_completed": false
+            }
+        ]
     },
     {
-        "_id": "e4aac5d597a546949246e4250ffa718c",
+        "_id": "2fe045728f3345b5b28fc81f21b55f36",
         "_topic": "Hello",
-        "_description": "test",
-        "_date": "17/01/2022 10:05:28",
+        "_description": "No description",
+        "_date": "17/01/2022 10:14:00",
         "_pinned": false,
         "_priority": null,
-        "_List__tasks": []
+        "_List__tasks": [
+            {
+                "_id": "f09c088efdf7434c91cfed41c5ce6439",
+                "_name": "tests23",
+                "_description": null,
+                "_deadline": "Today",
+                "_completed": false
+            },
+            {
+                "_id": "d99fb30f286141739e4cbd9ec58b008a",
+                "_name": "test1",
+                "_description": null,
+                "_deadline": "Today",
+                "_completed": false
+            },
+            {
+                "_id": "7f6303aad0d9403ea71693aa29ad79fa",
+                "_name": "test2",
+                "_description": null,
+                "_deadline": "Today",
+                "_completed": false
+            },
+            {
+                "_id": "7ee5dd6edcd14f51b182f11fb92dce68",
+                "_name": "test3",
+                "_description": null,
+                "_deadline": "Today",
+                "_completed": false
+            }
+        ]
     }
 ]

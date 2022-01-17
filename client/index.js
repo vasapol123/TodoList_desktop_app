@@ -59,12 +59,12 @@ const createTaskElement = (task) => {
             async function() {
                 let iteration = $(this).data('iteration') || 1;
                 const nameInput = $(this).prevAll('.task__name');
-                const descriptionInput = $(this).prev('.task__description');
 
                 switch (iteration) {
                     case 1: {
                         // editing task
                         $(this).parents().children('.task__name').not('button').removeAttr('disabled');
+                        $(this).prev().trigger('focus');
                         $(this).text('Save');
 
                         break;
@@ -75,16 +75,17 @@ const createTaskElement = (task) => {
                         const task = $(this).parents('.task__item').data('task');
 
                         const newData = {
-                            "_name": nameInput.val(),
-                            "_description": descriptionInput.val()
+                            "_name": nameInput.val()
                         };
                         
                         const updatedTask = await eel.updateTask(task._id, newData)();
+
                         if (updatedTask.error) {
                             $('.task__form').after(createInvalidElement(updatedTask.error))
-
-                            return
+                            
+                            break;
                         }
+                        $(this).parents('.task__item').data('task', updatedTask);
 
                         nameInput.val(updatedTask._name);
 
@@ -206,10 +207,12 @@ const createListElement = (list) => {
             class: 'list__description',
             click: function(event) {
                 event.stopPropagation();
-            }, 
+            } 
         })
-        .css('pointer-events', 'none')
-        .text(list._description),
+        .css({ 
+            'pointer-events': 'none' 
+        })
+        .text(list._description || "No description"),
         $('<button>', { 
             class: 'list__edit'
         })
@@ -246,6 +249,8 @@ const createTaskForm = () => {
 
             task = await eel.createTask($(this).children('.task__input').val(), $(this).children('.task__textarea').val())();
             createTaskElement(task).appendTo($('.task__menu'));
+
+            $(this).children('.task__input').val('');
         }
     })
     .append([
@@ -277,17 +282,18 @@ const createListForm = () => {
             event.preventDefault();
 
             const _list = await eel.createList($(this).children('.list__input').val(), $(this).children('.list__textarea').val())();
-
+            
+            $('.header__list-toggle').one('click', function() {
+                $('#list').children().prepend(createListForm());
+            });
+            
             if (_list.error) {
                 $('.list__form').after(createInvalidElement(_list.error));
 
                 return
             }
-            $('.header__list-toggle').one('click', function() {
-                $('#list').children().prepend(createListForm());
-            });
-
-            $(this).next('.list__menu').append(createListElement(_list));
+            
+            $('.list__menu').append(createListElement(_list));
 
             $(this).fadeOut('fast', () => {
                 $(this).remove();
