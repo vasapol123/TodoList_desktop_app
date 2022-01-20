@@ -73,8 +73,10 @@ $(document).on('ready', async function() {
             return
         }
 
-        setCookie("token", newUser._Token__token, 1);
-        setCookie('tokenId', newUser._Token__id, 1);
+        const token = await eel.getToken()();
+
+        setCookie("token", token._Token__token, 1);
+        setCookie('tokenId', token._Token__id, 1);
 
         window.location.href = redirect;
     });

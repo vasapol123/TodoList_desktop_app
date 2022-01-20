@@ -1,4 +1,3 @@
-from lib2to3.pgen2 import token
 import eel
 import sys
 from pathlib import Path

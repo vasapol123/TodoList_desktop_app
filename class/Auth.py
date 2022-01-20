@@ -6,7 +6,7 @@ from DataHandler import DataHandler
 
 class Auth:
     def __init__(self):
-        load_dotenv(find_dotenv('./config/.env'))
+        load_dotenv(find_dotenv('../config/.env'))
         self.__dataHandler = DataHandler()
         self.__JWT_SECRET = os.getenv('JWTSECRET')
 
