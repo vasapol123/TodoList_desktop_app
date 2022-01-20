@@ -369,7 +369,7 @@ $(document).on('ready', async function() {
 
         eraseCookie('token');
         eraseCookie('tokenId');
-        window.location.href = './pages/auth.html';
+        window.location.href = './source/pages/auth.html';
     });
 
     $(document).on('click', function(event) {
