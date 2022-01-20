@@ -122,6 +122,16 @@ def createUser(email, password):
         return { "error": str(error) }
 
 @eel.expose
+def updateUserList():
+    global user
+    global userHandler
+
+    try:
+        userHandler.updateList()
+    except Exception as error:
+        return { "error": str(error) }
+
+@eel.expose
 def getCurrentUser():
     global user
     print(user)

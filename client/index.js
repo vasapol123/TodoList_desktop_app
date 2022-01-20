@@ -235,6 +235,7 @@ const createListElement = (list) => {
                 const list = $(this).parents('.list__item').data('list');
 
                 await eel.deleteList(list._id)();
+                await eel.updateUserList()();
 
                 $(this).parents('.list__item').fadeOut('fast', () => {
                     $(this).parents('.list__item').remove();

@@ -1,9 +1,11 @@
+from operator import index
 from time import sleep
 import re
 from User import User
 from Auth import Auth
 from Token import Token
 from DataHandler import DataHandler
+from ListHandler import ListHandler
 
 class UserHandler:
     def __init__(self):
@@ -111,8 +113,6 @@ class UserHandler:
         index = 0
         user = auth.verifyAuthToken(self.__AuthToken['_Token__token'])
 
-        print(user)
-
         if (not user[0]):
             raise Exception('Please authenticate')
 
@@ -128,18 +128,46 @@ class UserHandler:
         (users[index]).update({ '_User__createdLists': user[1]['_User__createdLists'] })
 
         self.__dataHandler.writeUsers(self.__users)
-        
-        
-        
+
+    def updateList(self):
+        auth = Auth()
+        users = self.getUsers()
+        lists = ListHandler().getLists()
+        userListArray = []
+
+        user = auth.verifyAuthToken(self.__AuthToken['_Token__token'])
+
+        if (not user[0]):
+            raise Exception('Please authenticate')
+
+        for x in user[1]['_User__createdLists']:
+            userListArray.append(x['_List__id'])
+
+        for x, i in zip(users, range(len(users))):
+            if (user[1]['_User__id'] == x['_User__id']):
+                index = i
+                break
+
+        lists = list(filter(lambda list: list['_id'] in userListArray , lists))
+
+        user[1]['_User__createdLists'] = []
+
+        for _list in lists:
+            (user[1]['_User__createdLists']).append({ "_List__id": _list['_id'] })
+
+        (users[index]).update({ '_User__createdLists': user[1]['_User__createdLists'] })
+
+        self.__dataHandler.writeUsers(self.__users)
+
 if __name__ == '__main__':
     user = UserHandler()
     auth = Auth()
     # print(user.createUser('jorin17@gmail.com', '1234567Pp'))
     # print(auth.authUser('b3445c5b0b005c1389c77a6e8884dcfb', '1234567Pp'))
-    user.loginUser('jorin17@gmail.com', '4221142Pp')
-    user.appendList('456')
+    user.loginUser('vasapol123@gmail.com', '1234567Pp')
+    user.updateList()
     sleep(5)
-    print(user.logoutUser('5a099da736855057911986434870b1ac'))
+    print(user.logoutUser('b3445c5b0b005c1389c77a6e8884dcfb'))
 
         
 
