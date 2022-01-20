@@ -17,7 +17,7 @@ body {
     height: auto;
     padding-top: 24px;
     margin-top: 48px;
-    padding-bottom: 154px;
+    padding-bottom: 24px;
     background-color: #fae5e3;
     border-radius: 8px;
 }
@@ -26,20 +26,47 @@ body {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    max-width: 580px;
+    max-width: 620px;
     margin: 0 auto;
     justify-content: center;
 }
 
 .header {
     height: 125px;
-    position: absolute;
-    width: 620px;
     overflow: hidden;
+    width: 100%;
     border-radius: 8px;
     background-color: #a7767c;
     border: 3px solid #000;
     box-shadow: 0px 2px 0px #000, 0 0.3rem 0rem 0 rgb(0 0 0 / 15%);
+}
+
+.dropdown {
+    position: absolute;
+    width: 38px;
+    right: 38px;
+}
+
+.dropdown > .dropdown__dropdown-menu {
+    opacity: 0;
+}
+
+.dropdown.active > .dropdown__dropdown-menu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.dropdown__button {
+    position: relative;
+    width: 38px !important;
+    margin-left: auto;
+}
+
+.dropdown__dropdown-menu {
+    position: absolute;
+    width: 100px;
+    background-color: #ccc;
 }
 
 .header__container img {
@@ -75,8 +102,7 @@ body {
 #list,
 #task {
     position: relative;
-    width: 100%;
-    top: 130px;
+    width: 93%;
 }
 
 #task {
@@ -110,8 +136,7 @@ body {
 
 .list__form > input,
 .list__form > textarea,
-.task__form > input,
-.task__form > textarea {
+.task__form > input {
     font-family: inherit;
     font-size: inherit;
     width: 100%;
@@ -122,9 +147,30 @@ body {
 }
 
 .list__input,
-.task__input {
+.task__input,
+.task__date {
     outline: none;
     margin-top: 24px;
+}
+
+.task__input,
+.task__date {
+    width: 47.744% !important;
+}
+
+.task__date {
+    margin-left: 24px;
+}
+
+.task__date-p {
+    width: 100%;
+    margin: 0 0 0 35px;
+    order: 1;
+}
+
+.task__date-p span:nth-child(2) {
+    color: rgba(0, 0, 0, 0.7);
+    margin-left: 14px;
 }
 
 .list__textarea,
@@ -135,7 +181,8 @@ body {
 
 .list__button,
 .task__button,
-.header__list-toggle {
+.header__list-toggle,
+.dropdown__button {
     font-family: inherit;
     font-size: 14px;
     width: 64px;
@@ -156,7 +203,7 @@ body {
 
 .header__list-toggle {
     position: absolute;
-    right: 14px;
+    right: 82px;
     width: 38px;
     background-color: #de3a4d;
     border: 2px solid #a12a38;
@@ -218,12 +265,12 @@ body {
 
 .task__item {
     width: 100%;
-    padding: 14px 14px 0 14px;
+    padding: 14px 24px 0 24px;
     list-style-type: none;
 }
 
 .task__item:last-child {
-    padding: 14px 14px 14px 14px;
+    padding: 14px 24px 14px 24px;
 }
 
 .list__content {
@@ -343,6 +390,7 @@ body {
 .task__content {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .task__name {

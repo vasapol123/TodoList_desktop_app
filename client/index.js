@@ -51,6 +51,13 @@ const createTaskElement = (task) => {
             }
         })
         .val(task._name),
+        $('<p>', {
+            class: 'task__date-p'
+        })
+        .append([
+            $('<span>').text(task._deadline.split(':')[1]),
+            $('<span>').text(task._deadline.split(':')[0])
+        ]),
         $('<button>', { 
             class: 'task__edit',
             type: 'button'
@@ -249,14 +256,24 @@ const createTaskForm = () => {
         submit: async function(event) {
             event.preventDefault();
 
-            task = await eel.createTask($(this).children('.task__input').val(), $(this).children('.task__textarea').val())();
+            const name = $(this).children('.task__input').val();
+            const deadline = $(this).children('.task__date').val();
+
+            const dateFormat = `${moment(new Date(deadline)).from(moment(new Date()))}:${moment(new Date(deadline)).format('DD/MM/YYYY')}`;
+            console.log(dateFormat);
+            task = await eel.createTask(name, dateFormat)();
             createTaskElement(task).appendTo($('.task__menu'));
 
             $(this).children('.task__input').val('');
+            $(this).children('.task__date').val('');
         }
     })
     .append([
         $('<input>', { class: 'task__input', placeholder: 'Add some topic' }),
+        $('<input>', { 
+            class: 'task__date',
+            type: 'date'
+        }),
         $('<button>', { class: 'task__button' }).text('Create')
     ]);
 };
@@ -278,6 +295,14 @@ const createInvalidElement = (text) => {
 };
 
 const createListForm = () => {
+    /*
+    *   <form class="list__form">
+    *       <input class="list__input" placeholder="Add some topic" />
+    *       <textarea class="list__textarea" placeholder="Add some description"></textarea>
+    *       <button class="list__button">Create</button>
+    *       <i class="fas fa-times fa-lg"></i>
+    *   </form>
+    */
     return $('<form>', {
         class: 'list__form',
         submit: async function(event) {
@@ -320,6 +345,10 @@ const createListForm = () => {
     ]).fadeIn('fast');
 };
 
+function eraseCookie(name) {   
+    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
 $(document).on('ready', async function() {
     const items = await eel.getLists()();
     const ul = $('<ul>', { class: 'list__menu' }).appendTo('#list');
@@ -332,5 +361,30 @@ $(document).on('ready', async function() {
     
     $('.header__list-toggle').one('click', function() {
         $('#list').prepend(createListForm());
+    });
+
+    $('.header__logout').on('click', async function() {
+        user = await eel.getCurrentUser()();
+        await eel.logout(user._User__id)();
+
+        eraseCookie('token');
+        eraseCookie('tokenId');
+        window.location.href = './pages/auth.html';
+    });
+
+    $(document).on('click', function(event) {
+        const isDropdownButton = event.target.matches('[data-dropdown-button]');
+        if (!isDropdownButton && event.target.closest('[data-dropdown]') != null) return;
+
+        let currentDropdown;
+        if (isDropdownButton) {
+            currentDropdown = event.target.closest('[data-dropdown]');
+            currentDropdown.classList.toggle('active');
+        }
+
+        $('[data-dropdown].active').each((_, dropdown) => {
+            if (dropdown === currentDropdown) return;
+            dropdown.classList.remove('active');
+        })
     });
 });

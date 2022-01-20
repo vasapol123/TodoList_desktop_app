@@ -19,8 +19,8 @@ class TaskHandler:
 
         raise Exception('Task not found!')
 
-    def createTask(self, name, description, deadline):
-        task = Task(name, description, deadline)     
+    def createTask(self, name, deadline):
+        task = Task(name, deadline)     
         tasks = self.getTasks()
           
         # checks whether name is exist in the to-do list

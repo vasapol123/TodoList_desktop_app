@@ -1,5 +1,7 @@
 /client/source/assets/fontawesome
 /client/source/lib
-/__pycache__
+__pycache__
 /.mypy_cache
 /data/*.json
+/config/*
+

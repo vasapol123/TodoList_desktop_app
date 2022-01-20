@@ -1,10 +1,9 @@
 import uuid
 
 class Task:
-    def __init__(self, name, description, deadline):
+    def __init__(self, name, deadline):
         self._id = uuid.uuid4().hex
         self._name = name
-        self._description = description
         self._deadline = deadline
         self._completed = False
 
