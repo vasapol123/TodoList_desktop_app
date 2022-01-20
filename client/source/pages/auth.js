@@ -63,6 +63,7 @@ $(document).on('ready', async function() {
 
         if (password != confirm) {
             console.log('false');
+            return;
         }
 
         const newUser = await eel.createUser(email, password)();
@@ -72,6 +73,6 @@ $(document).on('ready', async function() {
             return
         }
 
-        window.location.href = redirect;
+        window.location.reload();
     });
 });
