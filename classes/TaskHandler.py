@@ -49,17 +49,13 @@ class TaskHandler:
     def updateTask(self, taskId, newData):
         task = self.getTask(taskId)
 
-        valueChangeCount = 0
         for key in [*task]:
             if (key in newData):
                 if (task[key] == newData[key]):
                     continue
 
-                valueChangeCount += 1
                 task[key] = newData[key]
 
-        if (valueChangeCount == 0):
-            raise Exception('All inputs are the same as previous!')
 
         self.__dataHandler.writeTasks(self.__lists)
         return task

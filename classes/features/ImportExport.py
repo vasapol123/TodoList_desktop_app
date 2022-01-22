@@ -48,26 +48,24 @@ class ImportExport:
         users = userHandler.getUsers()
         user = userHandler.getUser(userId)
 
-        listHandler = ListHandler()
-
         with open(filePath) as file:
             importedLists = json.load(file)
 
         try:
             for importedlist in importedLists:
+                listHandler = ListHandler()
                 newList = listHandler.createList(importedlist['_topic'], importedlist['_description'])
                 user['_User__createdLists'].append({ '_List__id': newList['_id'] })
 
-                taskHandler = TaskHandler(newList['_id'])
                 for task in importedlist['_List__tasks'] :
+                    taskHandler = TaskHandler(newList['_id'])
                     newTask = taskHandler.createTask(task['_name'], task['_deadline'])
                     taskHandler.updateTask(newTask['_id'], { "_completed": task['_completed'], "_overdue": task['_overdue'] })
-
 
             for _user, i in zip(users, range(len(users))):
                 if (_user['_User__id'] == userId):
                     users[i] = user
-                    print(user)
+
         except:
             raise Exception('Invalid json file')
 
@@ -76,7 +74,3 @@ class ImportExport:
 
         with open(path + 'users.json', 'w') as file:
             json.dump(users, file, indent=4, separators=(',', ': '))
-
-if __name__ == '__main__':
-    export = ImportExport()
-    print(export.importListData('5a099da736855057911986434870b1ac'))
