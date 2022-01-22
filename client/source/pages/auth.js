@@ -50,8 +50,13 @@ $(document).on('ready', async function() {
     });
 
     $('.login__to-signup').children('span').on('click', function() {
-        $(this).parent().parent().hide();
+        $(this).parents('.login').hide();
         $('.signup').show();
+    });
+
+    $('.signup__to-login').children('span').on('click', function() {
+        $(this).parents('.signup').hide();
+        $('.login').show();
     });
 
     $('.signup__form').on('submit', async function(event) {

@@ -6,6 +6,7 @@ class Task:
         self._name = name
         self._deadline = deadline
         self._completed = False
+        self._overdue = False
 
     # initializes getter functions
     @property

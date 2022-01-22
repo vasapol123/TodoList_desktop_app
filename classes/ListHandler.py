@@ -1,5 +1,5 @@
-from List import List
-from DataHandler import DataHandler
+from .List import List
+from .DataHandler import DataHandler
 
 class ListHandler:
     def __init__(self):

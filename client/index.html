@@ -9,23 +9,33 @@
         <link href="./source/assets/fontawesome/css/all.css" rel="stylesheet">
         <link rel="stylesheet" href="./source/fontface.css">
         <link rel="stylesheet" href="index.css">
+        <link rel="stylesheet" href="chart.css">
+        <link type="text/css" href="./source/lib/jquery-ui-1.13.1/jquery-ui.min.css" rel="stylesheet" />   
     </head>
     <body>
         <div class="container">
             <div class="box">
                 <div class="header">
                     <button class="header__list-toggle">
-                        <i class="fas fa-plus"></i>
+                        Create list
                     </button>
                     <div class="dropdown" data-dropdown>
                         <button class="dropdown__button" data-dropdown-button>
                             <i class="fas fa-ellipsis-h" data-dropdown-button></i>
                         </button>
                         <div class="dropdown__dropdown-menu" data-dropdown>
+                            <i class="fas fa-grip-lines"></i>
+                            <input id="fileselector" type="file" webkitdirectory directory multiple="false" style="display:none" />
+                            <button class="header__import">
+                                Import JSON information
+                            </button>
+                            <button class="header__export">
+                                Export JSON information
+                            </button>
+                            <div></div>
                             <button class="header__logout">
                                 Logout
                             </button>
-                            COntentasd;alskds
                         </div>
                     </div>
                     
@@ -35,6 +45,21 @@
                         <span class="header__description">Here, you can create a list and manipulate your tasks as much as you wish.</span>
                     </div>
                 </div>
+                <button class="chart-button">
+                    <img src="source/assets/svg/favicon.ico">
+                    <p>Charts</p>
+                    <p>View list statistics in data virtualization</p>
+                </button>
+                <div class="chart">
+                    <div class="chart__back">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Lists</span>
+                    </div>
+                    <div></div>
+                </div>
+                <!-- <div>
+                    <canvas id="myChart" width="400" height="400"></canvas>
+                </div> -->
                 <div class="list" id="list">            
                         <!-- These inner elements will come from JavaScript -->
                 </div>
@@ -48,7 +73,11 @@
         <!-- Import JavaScript files -->
         <script type="text/javascript" src="./source/lib/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="./source/lib/moment.js"></script>
+        <script type="text/javascript" src="./source/lib/chart.min.js"></script>
+        <script type="text/javascript" src="./source/lib/jquery-ui-1.13.1/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="./source/lib/jquery-ui-1.13.1/jquery-ui.js"></script>
         <script type="text/javascript" src="/eel.js"></script>  
+        <script src="chart.js"></script>
         <script src="index.js"></script>
     </body>
 </html>

@@ -2,7 +2,7 @@ import bcrypt
 import jwt
 import os
 from dotenv import *
-from DataHandler import DataHandler
+from .DataHandler import DataHandler
 
 class Auth:
     def __init__(self):

@@ -1,21 +1,20 @@
 import eel
-import sys
-from pathlib import Path
 
-sys.path.insert(0, './class');
-
-from ListHandler import ListHandler
-from TaskHandler import TaskHandler
-from UserHandler import UserHandler
-from Auth import Auth
+from classes.ListHandler import ListHandler
+from classes.TaskHandler import TaskHandler
+from classes.UserHandler import UserHandler
+from classes.features.ImportExport import ImportExport
+from classes.Auth import Auth
 
 eel.init('client')
 
-tasks, user, userHandler, authToken = (None,) * 4
+tasks, user, userHandler, authToken, authTokenId = (None,) * 5
 
 # List
 @eel.expose
 def createList(topic, description):
+    global userHandler
+    print(userHandler.token)
     try:
         _list = ListHandler().createList(topic, description)
         userHandler.appendList(_list['_id'])
@@ -25,16 +24,27 @@ def createList(topic, description):
 
 @eel.expose
 def getLists():
+    global user
+    global userHandler
+    global authToken
+    global authTokenId
+
+    # update user's lists
+    userHandler = UserHandler()
+    userHandler.token = (authTokenId, authToken)
     lists = ListHandler().getLists()
     userListArray = []
 
-    for x in user['_User__createdLists']:
+    _user = userHandler.getUser(user['_User__id'])
+    user = _user
+
+    for x in _user['_User__createdLists']:
             userListArray.append(x['_List__id'])
 
     def filterList(_list):
         return True if _list['_id'] in userListArray else False
 
-    if (len(user['_User__createdLists']) == 0):
+    if (len(_user['_User__createdLists']) == 0):
         lists = []
     else:
         lists = list(filter(filterList, lists))
@@ -82,12 +92,16 @@ def login(email, password):
     try:
         global user
         global authToken
+        global authTokenId
         global userHandler
 
         userHandler = UserHandler()
 
         user = userHandler.loginUser(email, password)
-        authToken = userHandler.token
+        userToken = user['_User__tokens'][-1]
+        print(userToken)
+        authToken = userToken['_Token__token']
+        authTokenId = userToken['_Token__id']
 
         return user
     except Exception as error:
@@ -134,26 +148,43 @@ def updateUserList():
 @eel.expose
 def getCurrentUser():
     global user
-    print(user)
     return user
 
 @eel.expose
 def getToken():
     global authToken
-    return authToken
+    global authTokenId
+    return { "_Token__id": authTokenId, "_Token__token": authToken }
 
 @eel.expose
 def setToken(token, tokenId):
     global user
     global authToken
+    global authTokenId
     global userHandler
     
     authToken = token
+    authTokenId = tokenId
 
     userHandler = UserHandler()
     userHandler.token = (tokenId, token)
     user = Auth().verifyAuthToken(token)[1]
 
     return user
+
+# Feature
+@eel.expose
+def exportLists(data, fileName):
+    try:
+        ImportExport().exportListData(data, fileName)
+    except Exception as error:
+        return { "error": str(error) }
+
+@eel.expose
+def importLists(userId):
+    try:
+        ImportExport().importListData(userId)
+    except Exception as error:
+        return { "error": str(error) }
 
 eel.start('source/pages/auth.html')

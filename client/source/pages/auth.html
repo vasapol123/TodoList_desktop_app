@@ -4,27 +4,38 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
+        <title>Login Todo List</title>
+        <link rel="icon" href="../assets/svg/favicon.svg">
+        <link rel="stylesheet" href="../fontface.css">
         <link rel="stylesheet" href="./auth.css">
     </head>
     <body>
         <div class="main-container">
             <div class="login">
-                <form class="login__form">
+                <!-- <img class="login__logo" src="../assets/svg/favicon.svg"/> -->
+                <div class="login__header">
+                    <img class="login__img" src="../assets/svg/login-header.svg">
                     <h1 class="login__topic">Login</h1>
-                    <input class="login__email" type="email" />
-                    <input class="login__password" type="password" />
+                    <p class="login__description">Login your account for todo list application. It's free and only take a minute.</p>
+                </div>
+                <form class="login__form">
+                    <input class="login__email" type="email" placeholder="Email" />
+                    <input class="login__password" type="password" placeholder="Password" />
                     <button class="login__submit" type="submit">Login</button>
                     <p class="login__to-signup">Don't have an account? <span>Register now</span></p>
                 </form>
             </div>
             <div class="signup">
-                <form class="signup__form">
+                <div class="signup__header">
+                    <img class="signup__img" src="../assets/svg/login-header.svg">
                     <h1 class="signup__topic">Signup</h1>
-                    <input class="signup__email" type="email" />
-                    <input class="signup__password" type="password" />
-                    <input class="signup__confirm" type="password" />
+                </div>
+                <form class="signup__form">
+                    <input class="signup__email" type="email" placeholder="Email" />
+                    <input class="signup__password" type="password" placeholder="Password" />
+                    <input class="signup__confirm" type="password" placeholder="Confirm password" />
                     <button class="signup__submit" type="submit">Signup</button>
+                    <p class="signup__to-login">Already have an account? <span>Login now</span></p>
                 </form>
             </div>
         </div>

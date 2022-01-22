@@ -9,4 +9,135 @@ body {
 
 .main-container {
     display: flex;
+    width: 100%;
+    max-width: 420px;
+    height: 100vh;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+    font-family: 'circularstdbook';
 }
+
+.login,
+.signup {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    width: 100%;
+}
+
+.login__header,
+.signup__header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 150px;
+    margin-top: 24px;
+    border-radius: 8px;
+    background-color: #a7767c;
+    border: 3px solid #000;
+    box-shadow: 0px 2px 0px #000, 0 0.3rem 0rem 0 rgb(0 0 0 / 15%);
+}
+
+/* .login__logo {
+    width: 58px;
+    height: auto;
+    z-index: 1;
+} */
+
+.login__header .login__img,
+.signup__header .signup__img {
+    position: absolute;
+    width: 250px;
+    transform: rotate(90deg);
+    top: -23px;
+    left: 3px;
+    width: 180px;
+}
+
+.login__header .login__topic,
+.signup__header .signup__topic {
+    width: 100%;
+    color: #fff;
+    z-index: 1;
+    margin: 24px 0 0 0;
+    text-align: center;
+    font-weight: 400;
+    font-family: 'circularstdbook';
+}
+
+.signup__header .signup__topic {
+    margin: 0 !important;
+}
+
+.login__header .login__description {
+    z-index: 1;
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+    margin: 0 24px 24px 24px;
+}
+
+.login__form,
+.signup__form {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.login__email,
+.login__password,
+.signup__email,
+.signup__password,
+.signup__confirm {
+    height: 38px;
+    outline: none;
+    border: none;
+    margin-top: 24px;
+    padding-left: 14px;
+    border-bottom: 2px solid #ccc;
+    font-family: inherit;
+    font-size: 16px;
+}
+
+.login__submit,
+.signup__submit {
+    align-self: center;
+    font-family: inherit;
+    font-size: 16px;
+    margin-top: 32px;
+    outline: none;
+    height: 48px;
+    width: 40%;
+    color: #fff;
+    background-color: #a7767c;
+    border-radius: 100px;
+    border: 2px solid #000;
+    box-shadow: 0px 2px 0px #000, 0 0.3rem 0rem 0 rgb(0 0 0 / 15%);
+    cursor: pointer;
+}
+
+.login__submit:active,
+.signup__submit:active {
+    box-shadow: 0px 0px 0px #000, 0 0.3rem 0rem 0 rgb(0 0 0 / 15%);
+    transform: translateY(2px);
+}
+
+.login__to-signup,
+.signup__to-login {
+    margin-top: 32px;
+    align-self: center;
+}
+
+.login__to-signup span,
+.signup__to-login span {
+    cursor: pointer;
+    color: #a7767c;
+}
+

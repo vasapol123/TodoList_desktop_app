@@ -1,4 +1,22 @@
-const createTaskElement = (task) => {
+const createTaskElement = async (task) => {
+    const deadlineDate = task._deadline.split(':')[1].split('/');
+    const isOverdue =  moment(
+        `${deadlineDate[2]}-${deadlineDate[1]}-${deadlineDate[0]}`
+    )
+    .isBefore(moment(new Date()));
+
+    if (!task._completed && !task._overdue && isOverdue) {
+        const updatedTask = await eel.updateTask(task._id, {
+            "_overdue": isOverdue
+        })();
+
+        if (updatedTask.error) {
+            alert(updatedTask.error);
+            // $('.task__form').after(createInvalidElement(updatedTask.error));
+            return;
+        }
+    }
+
     const taskElement = $('<li>', { class: 'task__item' })
     .append($('<div>', { class: 'task__content' })
     .append([ 
@@ -8,30 +26,60 @@ const createTaskElement = (task) => {
                 type: 'checkbox',
                 change: async function() {
                     const task = $(this).parents('.task__item').data('task');
+                    const deadlineDate = task._deadline.split(':')[1].split('/');
+                    const isCompleted = $(this).is(':checked');
+                    const isOverdue = !isCompleted && moment(
+                        `${deadlineDate[2]}-${deadlineDate[1]}-${deadlineDate[0]}`
+                    )
+                    .isBefore(moment(new Date()));
 
-                    const updatedTask = await eel.updateTask(task._id, { "_completed": $(this).is(':checked') })();
+                    const updatedTask = await eel.updateTask(task._id, {
+                         ...({}) && { "_completed": isCompleted },
+                         ...(!task._completed) && { "_overdue": isOverdue }
+                    })();
+
                     if (updatedTask.error) {
-                        $('.task__form').after(createInvalidElement(updatedTask.error))
-
-                        return
+                        alert(updatedTask.error);
+                        // $('.task__form').after(createInvalidElement(updatedTask.error));
+                        return;
                     }
-                    const taskNameInput = $(this).parent().next('.task__name');
 
+                    if (isCompleted) {
+                        $(this).parents('.task__item').detach().appendTo($('.task__completed'));
+                    }
+                    else if (!isCompleted) {
+                        $(this).parents('.task__item').detach().appendTo($('.task__incomplete'));
+                    }
+                    
+
+                    if (isOverdue) {
+                        $(this).prop('disabled', true);
+                    }
+
+                    const taskName = $(this).parent().nextAll('.task__name');
+                    const taskDate = $(this).parent().nextAll('.task__date-p');
                     if (updatedTask._completed) {
-                        taskNameInput.css({
+                        taskName.css({
                             'text-decoration': 'line-through',
+                            'color': 'rgba(0, 0, 0, 0.2)'
+                        });
+                        taskDate.css({
                             'color': 'rgba(0, 0, 0, 0.2)'
                         });
                     }
                     else {
-                        taskNameInput.css({ 
+                        taskName.css({ 
                             'text-decoration': 'none',
+                            'color': 'rgba(0, 0, 0, 1)'
+                        });
+                        taskDate.css({
                             'color': 'rgba(0, 0, 0, 1)'
                         });
                     }
                 }
             })
-            .prop('checked', task._completed),
+            .prop('checked', (task._completed))
+            .prop('disabled', (task._overdue)),
             $('<span>', { class: 'checkbox__checkmark' })
         ]),
         $('<input>', {
@@ -40,13 +88,13 @@ const createTaskElement = (task) => {
         })
         .css({
             'text-decoration': function() {
-                if (task._completed) {
+                if (task._completed || task._overdue) {
                         return 'line-through';
                 }
             },
             'color': function() {
-                if (task._completed) {
-                        return 'rgba(0, 0, 0, 0.2)'
+                if (task._completed || task._overdue) {
+                        return 'rgba(0, 0, 0, 0.2)';
                 }
             }
         })
@@ -54,9 +102,16 @@ const createTaskElement = (task) => {
         $('<p>', {
             class: 'task__date-p'
         })
+        .css({
+            'color': function() {
+                if (task._completed || task._overdue) {
+                        return 'rgba(0, 0, 0, 0.2)';
+                }
+            }
+        })
         .append([
             $('<span>').text(task._deadline.split(':')[1]),
-            $('<span>').text(task._deadline.split(':')[0])
+            $('<span>').text((task._overdue) ? 'overdue' : task._deadline.split(':')[0])
         ]),
         $('<button>', { 
             class: 'task__edit',
@@ -88,7 +143,8 @@ const createTaskElement = (task) => {
                         const updatedTask = await eel.updateTask(task._id, newData)();
 
                         if (updatedTask.error) {
-                            $('.task__form').after(createInvalidElement(updatedTask.error))
+                            alert(updatedTask.error);
+                            // $('.task__form').after(createInvalidElement(updatedTask.error))
                             
                             break;
                         }
@@ -154,7 +210,8 @@ const createListElement = (list) => {
         })();
 
         if (updatedList.error) {
-            $('.list__form').after(createInvalidElement(updatedList.error));
+            alert(updatedList.error);
+            // $('.list__form').after(createInvalidElement(updatedList.error));
         }
 
         contents.prop('contenteditable', false);
@@ -175,6 +232,11 @@ const createListElement = (list) => {
             $('#task').show();
     
             const ul = $('<ul>', { class: 'task__menu' }).appendTo('#task');
+            ul.append([
+                $('<div>', { class: 'task__incomplete' }).append($('<li>').append($('<span>').text('Incomplete'))),
+                $('<div>', { class: 'task__completed' }).append($('<li>').append($('<span>').text('Completed'))),
+                $('<div>', { class: 'task__overdue' }).append($('<li>').append($('<span>').text('Overdue')))
+            ]);
     
             $('<div>', { 
                 class: 'task__back',
@@ -184,19 +246,27 @@ const createListElement = (list) => {
     
                     const tasks = await eel.getTasks(list._id)();
     
-                    console.log($(this).children('.list__tasks').text(`${tasks.length} tasks`));
+                    $(this).children('.list__tasks').text(`${tasks.length} tasks`);
                 }
             })
             .append(
-                $('<i>', { class: 'fas fa-chevron-left' }),
+                $('<i>', { class: 'fas fa-arrow-left' }),
                 $('<p>').text('Lists')
             ).prependTo('#task');
     
             const tasks = await eel.getTasks(list._id)();
     
-            tasks.forEach((task) => {
-                const taskElement = createTaskElement(task);
-                taskElement.appendTo(ul);
+            tasks.forEach(async (task) => {
+                const taskElement = await createTaskElement(task);
+                if (task._overdue) {
+                    taskElement.appendTo(ul.children('.task__overdue'));
+                }
+                else if (!task._completed) {
+                    taskElement.appendTo(ul.children('.task__incomplete'));
+                }
+                else {
+                    taskElement.appendTo(ul.children('.task__completed'));
+                }
             });
         }
     })
@@ -259,11 +329,28 @@ const createTaskForm = () => {
 
             const name = $(this).children('.task__input').val();
             const deadline = $(this).children('.task__date').val();
-
             const dateFormat = `${moment(new Date(deadline)).from(moment(new Date()))}:${moment(new Date(deadline)).format('DD/MM/YYYY')}`;
-            console.log(dateFormat);
-            task = await eel.createTask(name, dateFormat)();
-            createTaskElement(task).appendTo($('.task__menu'));
+            const isOverdue = moment(deadline).isBefore(moment(new Date()));
+
+            let task = await eel.createTask(name, dateFormat)();
+            if (isOverdue) {
+                await eel.updateTask(task._id, {
+                    "_overdue": isOverdue 
+                })();
+            }
+
+            task = { ...task, "_overdue": isOverdue };
+            const ul = $('.task__menu');
+            const taskElement = await createTaskElement(task)
+            if (task._overdue) {
+                taskElement.appendTo(ul.children('.task__overdue'));
+            }
+            else if (!task._completed) {
+                taskElement.appendTo(ul.children('.task__incomplete'));
+            }
+            else {
+                taskElement.appendTo(ul.children('.task__completed'));
+            }
 
             $(this).children('.task__input').val('');
             $(this).children('.task__date').val('');
@@ -273,7 +360,8 @@ const createTaskForm = () => {
         $('<input>', { class: 'task__input', placeholder: 'Add some topic' }),
         $('<input>', { 
             class: 'task__date',
-            type: 'date'
+            type: 'date',
+            lang: 'en'
         }),
         $('<button>', { class: 'task__button' }).text('Create')
     ]);
@@ -316,9 +404,9 @@ const createListForm = () => {
             });
             
             if (_list.error) {
-                $('.list__form').after(createInvalidElement(_list.error));
-
-                return
+                window.alert(_list.error);
+                // $('.list__form').after(createInvalidElement(_list.error));
+                return;
             }
             
             $('.list__menu').append(createListElement(_list));
@@ -354,6 +442,8 @@ $(document).on('ready', async function() {
     const items = await eel.getLists()();
     const ul = $('<ul>', { class: 'list__menu' }).appendTo('#list');
 
+    console.log(items);
+
     items.forEach((item) => {
         ul.append(createListElement(item));
     });  
@@ -372,6 +462,23 @@ $(document).on('ready', async function() {
         eraseCookie('tokenId');
         window.location.href = './source/pages/auth.html';
     });
+
+    $('.header__import').on('click', async function() {
+        user = await eel.getCurrentUser()();
+        await eel.importLists(user._User__id)();
+
+        window.location.reload();
+    });
+
+    $('.header__export').on('click', async function() {
+        lists = await eel.getLists()();
+        user = await eel.getCurrentUser()();
+        await eel.exportLists(lists, user._User__id)();
+    });
+
+    $( function() {
+        $('.dropdown__dropdown-menu').draggable({ handle: 'i' });
+    } );
 
     $(document).on('click', function(event) {
         const isDropdownButton = event.target.matches('[data-dropdown-button]');

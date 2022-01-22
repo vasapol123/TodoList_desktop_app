@@ -1,13 +1,13 @@
-from Task import Task
-from ListHandler import ListHandler
-from DataHandler import DataHandler
+from .Task import Task
+from .ListHandler import ListHandler
+from .DataHandler import DataHandler
 
 class TaskHandler:
     def __init__(self, id):
         self.__dataHandler = DataHandler()
         self.__lists = self.__dataHandler.readTasks()
         self.__list = ListHandler().getList(id)
-        self.__tasks = (item for item in self.__lists if item['_topic'] == self.__list['_topic']).__next__()['_List__tasks']
+        self.__tasks = (item for item in self.__lists if item['_id'] == self.__list['_id']).__next__()['_List__tasks']
 
     def getTasks(self):
         return self.__tasks

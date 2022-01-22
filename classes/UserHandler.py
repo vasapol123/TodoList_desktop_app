@@ -1,11 +1,12 @@
 from operator import index
 from time import sleep
 import re
-from User import User
-from Auth import Auth
-from Token import Token
-from DataHandler import DataHandler
-from ListHandler import ListHandler
+
+from .User import User
+from .Auth import Auth
+from .Token import Token
+from .DataHandler import DataHandler
+from .ListHandler import ListHandler
 
 class UserHandler:
     def __init__(self):
