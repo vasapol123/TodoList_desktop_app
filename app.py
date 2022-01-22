@@ -99,7 +99,7 @@ def login(email, password):
 
         user = userHandler.loginUser(email, password)
         userToken = user['_User__tokens'][-1]
-        print(userToken)
+
         authToken = userToken['_Token__token']
         authTokenId = userToken['_Token__id']
 
@@ -124,12 +124,16 @@ def createUser(email, password):
     try:
         global user
         global authToken
+        global authTokenId
         global userHandler
 
         userHandler = UserHandler()
 
         user = userHandler.createUser(email, password)
-        authToken = userHandler.token
+        userToken = user['_User__tokens'][-1]
+        
+        authToken = userToken['_Token__token']
+        authTokenId = userToken['_Token__id']
 
         return user
     except Exception as error:
