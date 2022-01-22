@@ -226,6 +226,7 @@ const createListElement = (list) => {
         click: async function() {
             $('#task > *').remove();
             $('#list').hide();
+            $('.chart-button').hide();
     
             createTaskForm().prependTo('#task');
     
@@ -242,6 +243,7 @@ const createListElement = (list) => {
                 class: 'task__back',
                 click: async () => {
                     $('#list').show();
+                    $('.chart-button').show();
                     $('#task').children().remove();
     
                     const tasks = await eel.getTasks(list._id)();
