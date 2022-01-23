@@ -14,7 +14,6 @@ tasks, user, userHandler, authToken, authTokenId = (None,) * 5
 @eel.expose
 def createList(topic, description):
     global userHandler
-    print(userHandler.token)
     try:
         _list = ListHandler().createList(topic, description)
         userHandler.appendList(_list['_id'])
@@ -80,6 +79,7 @@ def deleteTask(taskId):
 
 @eel.expose
 def updateTask(taskId, newData):
+    global tasks
     try:
         updatedTask = tasks.updateTask(taskId, newData)
         return updatedTask

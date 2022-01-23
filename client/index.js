@@ -6,8 +6,6 @@ const updateTaskDate = async (task) => {
     )
     .from(moment(new Date()));
 
-    console.log(deadlineDate, deadlineFromNow);
-
     const isOverdue = moment(
         deadlineDate, 'DD MM YYYY'
     )
@@ -18,6 +16,7 @@ const updateTaskDate = async (task) => {
             "_deadline": `${deadlineFromNow}:${task._deadline.split(':')[1]}`,
             ...(!task._completed && !task._overdue && isOverdue) && { "_overdue": isOverdue }
         })();
+        console.log(updatedTask);
 
         if (updatedTask.error) {
             return { error: updatedTask.error };
@@ -234,9 +233,9 @@ const createListElement = async (list) => {
     }
 
     const tasks = await eel.getTasks(list._id)();
-    tasks.forEach(async (task) => {
+    await Promise.all(tasks.map(async (task) => {
         await updateTaskDate(task);
-    });
+    }));
 
     const listElement = $('<div>', { class: 'list__item' })
     .append($('<button>', {
@@ -429,8 +428,8 @@ const createListForm = () => {
                 // $('.list__form').after(createInvalidElement(_list.error));
                 return;
             }
-            
-            $('.list__menu').append(await createListElement(_list));
+            const listElement = await createListElement(_list);
+            $('.list__menu').append(listElement);
 
             $(this).fadeOut('fast', () => {
                 $(this).remove();
@@ -464,10 +463,12 @@ function eraseCookie(name) {
 $(document).on('ready', async function() {
     const items = await eel.getLists()();
     const ul = $('<ul>', { class: 'list__menu' }).appendTo('#list');
+    console.log(items)
 
-    items.forEach(async (item) => {
-        ul.append(await createListElement(item));
-    });  
+    for (const item of items) {
+        const listElement = await createListElement(item);
+        $(listElement).appendTo(ul);
+    }
 
     $('#task').hide();
     
