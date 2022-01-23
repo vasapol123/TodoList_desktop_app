@@ -137,7 +137,7 @@ $(document).on('ready', function() {
                         'rgb(54, 162, 235)',
                         'rgb(255, 205, 86)'
                     ],
-                    hoverOffset: 18
+                    hoverOffset: 10
                 }]
             };
         

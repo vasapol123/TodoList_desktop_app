@@ -1,22 +1,34 @@
-const createTaskElement = async (task) => {
+const updateTaskDate = async (task) => {
     const deadlineDate = task._deadline.split(':')[1].split('/');
-    const isOverdue =  moment(
-        `${deadlineDate[2]}-${deadlineDate[1]}-${deadlineDate[0]}`
+
+    const deadlineFromNow = moment(
+        deadlineDate, 'DD MM YYYY'
+    )
+    .from(moment(new Date()));
+
+    console.log(deadlineDate, deadlineFromNow);
+
+    const isOverdue = moment(
+        deadlineDate, 'DD MM YYYY'
     )
     .isBefore(moment(new Date()));
 
-    if (!task._completed && !task._overdue && isOverdue) {
+    if (deadlineFromNow !== task._deadline.split(':')[0]) {
         const updatedTask = await eel.updateTask(task._id, {
-            "_overdue": isOverdue
+            "_deadline": `${deadlineFromNow}:${task._deadline.split(':')[1]}`,
+            ...(!task._completed && !task._overdue && isOverdue) && { "_overdue": isOverdue }
         })();
 
         if (updatedTask.error) {
-            alert(updatedTask.error);
+            return { error: updatedTask.error };
             // $('.task__form').after(createInvalidElement(updatedTask.error));
-            return;
         }
+        return updatedTask;
     }
+    return null;
+};
 
+const createTaskElement = async (task) => {
     const taskElement = $('<li>', { class: 'task__item' })
     .append($('<div>', { class: 'task__content' })
     .append([ 
@@ -26,10 +38,11 @@ const createTaskElement = async (task) => {
                 type: 'checkbox',
                 change: async function() {
                     const task = $(this).parents('.task__item').data('task');
-                    const deadlineDate = task._deadline.split(':')[1].split('/');
                     const isCompleted = $(this).is(':checked');
+
+                    const deadlineDate = task._deadline.split(':')[1].split('/');
                     const isOverdue = !isCompleted && moment(
-                        `${deadlineDate[2]}-${deadlineDate[1]}-${deadlineDate[0]}`
+                        deadlineDate, 'DD MM YYYY'
                     )
                     .isBefore(moment(new Date()));
 
@@ -180,7 +193,7 @@ const createTaskElement = async (task) => {
     return taskElement;
 };
 
-const createListElement = (list) => {
+const createListElement = async (list) => {
     function edit(event) {
         event.stopPropagation();
         const contents = $(this).prevAll();
@@ -220,6 +233,11 @@ const createListElement = (list) => {
         $(this).one('click', edit);
     }
 
+    const tasks = await eel.getTasks(list._id)();
+    tasks.forEach(async (task) => {
+        await updateTaskDate(task);
+    });
+
     const listElement = $('<div>', { class: 'list__item' })
     .append($('<button>', {
         class: 'list__content',
@@ -254,7 +272,8 @@ const createListElement = (list) => {
             .append(
                 $('<i>', { class: 'fas fa-arrow-left' }),
                 $('<p>').text('Lists')
-            ).prependTo('#task');
+            )
+            .prependTo('#task');
     
             const tasks = await eel.getTasks(list._id)();
     
@@ -317,7 +336,7 @@ const createListElement = (list) => {
         $('<p>', { class: 'list__tasks' }).text(`${list._List__tasks.length} tasks`),
         $('<p>', { class: 'list__date' }).text(list._date)
     ]));
-    console.log(list);
+    
     listElement.data('list', list);
 
     return listElement;
@@ -359,11 +378,11 @@ const createTaskForm = () => {
         }
     })
     .append([
-        $('<input>', { class: 'task__input', placeholder: 'Add some topic' }),
+        $('<input>', { class: 'task__input', placeholder: 'Add some task' }),
         $('<input>', { 
             class: 'task__date',
             type: 'date',
-            lang: 'en'
+            lang: 'en-EN'
         }),
         $('<button>', { class: 'task__button' }).text('Create')
     ]);
@@ -411,7 +430,7 @@ const createListForm = () => {
                 return;
             }
             
-            $('.list__menu').append(createListElement(_list));
+            $('.list__menu').append(await createListElement(_list));
 
             $(this).fadeOut('fast', () => {
                 $(this).remove();
@@ -440,14 +459,14 @@ function eraseCookie(name) {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
+
+
 $(document).on('ready', async function() {
     const items = await eel.getLists()();
     const ul = $('<ul>', { class: 'list__menu' }).appendTo('#list');
 
-    console.log(items);
-
-    items.forEach((item) => {
-        ul.append(createListElement(item));
+    items.forEach(async (item) => {
+        ul.append(await createListElement(item));
     });  
 
     $('#task').hide();
@@ -482,6 +501,7 @@ $(document).on('ready', async function() {
         $('.dropdown__dropdown-menu').draggable({ handle: 'i' });
     } );
 
+    // dropdown button implement
     $(document).on('click', function(event) {
         const isDropdownButton = event.target.matches('[data-dropdown-button]');
         if (!isDropdownButton && event.target.closest('[data-dropdown]') != null) return;
