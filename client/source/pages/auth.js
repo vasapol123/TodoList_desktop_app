@@ -38,7 +38,7 @@ $(document).on('ready', async function() {
         const user = await eel.login($(this).children('.login__email').val(), $(this).children('.login__password').val())();
         
         if (user.error) {
-            console.log(user);
+            alert(user.error);
 
             return;
         }
@@ -67,14 +67,14 @@ $(document).on('ready', async function() {
         const confirm = $(this).children('.signup__confirm').val();
 
         if (password != confirm) {
-            console.log('false');
+            alert('Password not match!');
             return;
         }
 
         const newUser = await eel.createUser(email, password)();
 
         if (newUser.error) {
-            console.log(newUser.error);
+            alert(newUser.error);
             return
         }
 
