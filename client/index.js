@@ -16,7 +16,6 @@ const updateTaskDate = async (task) => {
             "_deadline": `${deadlineFromNow}:${task._deadline.split(':')[1]}`,
             ...(!task._completed && !task._overdue && isOverdue) && { "_overdue": isOverdue }
         })();
-        console.log(updatedTask);
 
         if (updatedTask.error) {
             return { error: updatedTask.error };
@@ -458,12 +457,9 @@ function eraseCookie(name) {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-
-
 $(document).on('ready', async function() {
     const items = await eel.getLists()();
     const ul = $('<ul>', { class: 'list__menu' }).appendTo('#list');
-    console.log(items)
 
     for (const item of items) {
         const listElement = await createListElement(item);
