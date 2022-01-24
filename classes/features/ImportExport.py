@@ -3,6 +3,7 @@ import tkinter
 import json
 import os
 from tkinter import filedialog
+from pathlib import Path
 
 from ..TaskHandler import TaskHandler
 from ..UserHandler import UserHandler
@@ -69,8 +70,8 @@ class ImportExport:
         except:
             raise Exception('Invalid json file')
 
-        fileName = filePath.split('/')[-1]
-        path = filePath.replace(fileName, '')
+        # fileName = filePath.split('/')[-1]
+        # path = filePath.replace(fileName, '')
 
-        with open(path + 'users.json', 'w') as file:
+        with open(Path(__file__).parent.parent.parent.absolute()/'data'/'users.json', 'w') as file:
             json.dump(users, file, indent=4, separators=(',', ': '))
